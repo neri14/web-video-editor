@@ -1,0 +1,89 @@
+#artifact-table {
+    max-width: 800px;
+    width: 100%;
+    display: table;
+}
+
+#artifact-table-caption {
+    display: table-caption;
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+#artifact-table-header {
+    display: table-header-group;
+    background-color: gray;
+    font-weight: bold;
+}
+
+.artifact-header-cell-chkbox {
+    width: 30px;
+}
+
+.artifact-header-cell-filename {
+    text-align: left;
+}
+
+.artifact-header-cell-progress {
+    width: 300px;
+}
+
+.artifact-header-cell-size {
+    width: 80px;
+    text-align: center;
+}
+
+.artifact-header-cell-buttons {
+    width: 70px;
+}
+
+.artifact-header-cell {
+    display: table-cell;
+    padding: 5px;
+    border-bottom: 1px solid black;
+}
+
+#artifact-table-body {
+    display: table-row-group;
+}
+
+.artifact-table-row {
+    display: table-row;
+}
+
+.artifact-table-cell-chkbox {
+    width: 30px;
+    text-align: center;
+}
+
+.artifact-table-cell-filename {
+    text-align: left;
+}
+
+.artifact-table-cell-progress {
+    width: 300px;
+    text-align: right;
+}
+
+.artifact-table-cell-size {
+    width: 80px;
+    text-align: right;
+}
+
+.artifact-table-cell-buttons {
+    width: 70px;
+    text-align: center;
+}
+
+.artifact-table-cell {
+    display: table-cell;
+}
+
+.artifact-progress-bar {
+    width: 250px;
+}
+
+#artifact-upload-form {
+    margin-top: 10px;
+}

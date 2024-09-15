@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    </head>
+    <body>
+        <div id="artifact-table">
+            <div id="artifact-table-caption">
+                Files
+            </div>
+            <div id="artifact-table-header">
+                <div class="artifact-header-cell artifact-header-cell-chkbox"></div>
+                <div class="artifact-header-cell artifact-header-cell-filename">file</div>
+                <div class="artifact-header-cell artifact-header-cell-progress"></div>
+                <div class="artifact-header-cell artifact-header-cell-size">size</div>
+                <div class="artifact-header-cell artifact-header-cell-buttons"></div>
+            </div>
+            <div id="artifact-table-body">
+                <!-- file rows generated based on server storage and uploading files -->
+                <div id="artifact-table-extra-row" class="artifact-table-row">
+                    <div class="artifact-table-cell artifact-table-cell-chkbox"></div>
+                    <div class="artifact-table-cell artifact-table-cell-filename"></div>
+                    <div class="artifact-table-cell artifact-table-cell-progress"></div>
+                    <div class="artifact-table-cell artifact-table-cell-size"></div>
+                    <div class="artifact-table-cell artifact-table-cell-buttons">
+                        <form id="artifact-upload-form">
+                            <input type="file" id="artifact-upload-form-files" style="display: none;" multiple onchange="uploadFiles()" />
+                            <input type="button" value="Upload" onclick="document.getElementById('artifact-upload-form-files').click();" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
