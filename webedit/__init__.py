@@ -1,29 +1,28 @@
-from fastapi import FastAPI,File,UploadFile,status
+from fastapi import FastAPI,WebSocket,WebSocketDisconnect,File,UploadFile,status
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from typing import List
 import shutil
 import os
+from json import JSONDecodeError
+
+from webedit.connection_manager import ConnectionManager
+from webedit.adapter import Adapter
+from webedit.filesystem import list_files
 
 storage_dir = "storage"
 
 app = FastAPI(title="WebEdit")
 api = FastAPI(title="WebEdit API")
 
+manager = ConnectionManager()
+adapter = Adapter(manager, storage_dir)
+adapter.init()
+
+
 @api.get("/files")
 def get_files():
-    files = []
-
-    for filename in os.listdir(storage_dir):
-        path = os.path.join(storage_dir, filename)
-        if os.path.isfile(path):
-            stat = os.stat(path)
-            file = {
-                "filename": filename,
-                "size": stat.st_size
-            }
-            files.append(file)
-
+    files = list_files(storage_dir)
     return JSONResponse({"files": files}, status_code=status.HTTP_200_OK)
 
 
@@ -47,6 +46,20 @@ def upload(file: UploadFile = File(...)):
         file.file.close()
 
     return JSONResponse({"status": f"uploaded file {file.filename}"}, status_code=status.HTTP_201_CREATED)
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            try:
+                msg = await websocket.receive_json()
+                await manager.handle_message(msg, websocket)
+            except JSONDecodeError as e:
+                print("Error parsing ws json message: {}".format(e))
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
 
 
 app.mount('/api', api)
