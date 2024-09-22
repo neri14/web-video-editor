@@ -104,23 +104,59 @@ function abortUpload(fileId) {
     }
 }
 
-function openJoinVideosMenu() {
-    console.log("openJoinVideosMenu");
+function openJoinVideosMenu(ev) {
+    fetch("join-window.html")
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.text()
+    })
+    .then((txt) => {
+        document.getElementById("modal-content").innerHTML = txt;
+        showModalWindow(ev);
+    });
 }
 
-function openTrimVideoMenu() {
-    console.log("openTrimVideoMenu");
+function openTrimVideoMenu(ev) {
+    fetch("trim-window.html")
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.text()
+    })
+    .then((txt) => {
+        document.getElementById("modal-content").innerHTML = txt;
+        showModalWindow(ev);
+    });
 }
 
-function openAlignTelemetryMenu() {
+function openAlignTelemetryMenu(ev) {
     console.log("openAlignTelemetryMenu");
 }
 
-function openGenerateOverlayMenu() {
+function openGenerateOverlayMenu(ev) {
     console.log("openGenerateOverlayMenu");
 }
 
-function artifactSelectionChange() {
+function showModalWindow(ev) {
+    ev.stopPropagation();
+    var modal = document.getElementById("modal-window-bg");
+    modal.style.display = "block";
+    modal.onclick = (ev) => {
+        if (ev.target == modal) {
+            hideModalWindow();
+        }
+    };
+}
+
+function hideModalWindow() {
+    var modal = document.getElementById("modal-window-bg");
+    modal.style.display = "none";
+}
+
+function artifactSelectionChange(ev) {
     var selectedFiles = [];
     document.querySelectorAll(".artifact-checkbox").forEach((chkbox) => {
         if (chkbox.checked && 'dataset' in chkbox && 'fileId' in chkbox.dataset) {
@@ -210,7 +246,8 @@ function uploadFile(file) {
     var fid = toFileId(file.name);
     var art = {
         filename: file.name,
-        progress: 0
+        progress: 0,
+        action: "uploading"
     }
 
     var formdata = new FormData();
@@ -282,8 +319,13 @@ function createArtifactRow(fileId, file) {
     chkbox.type = "checkbox";
     chkbox.classList.add("artifact-checkbox");
     chkbox.dataset.fileId = fileId;
+    chkbox.onclick = (ev) => {ev.stopPropagation();};
     chkbox.onchange = artifactSelectionChange;
     chkboxCell.appendChild(chkbox);
+
+    row.onclick = (ev) => {
+        chkbox.click();
+    };
 
     // filename
     var filenameCell = document.createElement("div");
@@ -299,6 +341,13 @@ function createArtifactRow(fileId, file) {
     progressCell.classList.add("artifact-table-cell-progress");
     row.appendChild(progressCell);
 
+    /* FIXME improve display and hiding what action is ongoing (uploading/generating) */
+    if ("action" in file) {
+        var action = document.createElement("span");
+        action.innerHTML = file.action + ": ";
+        progressCell.appendChild(action);
+    }
+    /* FIXME */
     if ("progress" in file) {
         var progressBar = document.createElement("progress");
         progressBar.classList.add("artifact-progress-bar");
@@ -324,23 +373,30 @@ function createArtifactRow(fileId, file) {
     row.appendChild(buttonsCell);
 
     var button = document.createElement("input");
+    button.classList.add("dark-button");
     button.classList.add("artifact-button");
     button.type = "button";
     if ("progress" in file) {
         //create Cancel button
         button.value = "Abort";
-        button.onclick = abortUpload.bind(null, fileId);
+        button.onclick = (ev) => {
+            ev.stopPropagation();
+            abortUpload(fileId);
+        };
     } else {
         //create Delete button
         button.value = "Delete";
-        button.onclick = deleteFile.bind(null, fileId);
+        button.onclick = (ev) => {
+            ev.stopPropagation();
+            deleteFile(fileId);
+        };
     }
     buttonsCell.appendChild(button);
 
     return row;
 }
 
-
+//FIXME refactor updateArtifactRow so that there is no duplicate divergent implementation for create vs update row
 function updateArtifactRow(fileId, file, row) {
     row.querySelector(".artifact-table-cell-filename").innerHTML = file.filename;
 
@@ -358,7 +414,10 @@ function updateArtifactRow(fileId, file, row) {
         }
         var button = row.querySelector(".artifact-button");
         button.value = "Abort";
-        button.onclick = abortUpload.bind(null, fileId);
+        button.onclick = (ev) => {
+            ev.stopPropagation();
+            abortUpload(fileId);
+        };
     } else {
         var progressBar = row.querySelector(".artifact-progress-bar");
         if (progressBar !== null) {
@@ -366,7 +425,10 @@ function updateArtifactRow(fileId, file, row) {
         }
         var button = row.querySelector(".artifact-button");
         button.value = "Delete";
-        button.onclick = deleteFile.bind(null, fileId);
+        button.onclick = (ev) => {
+            ev.stopPropagation();
+            deleteFile(fileId);
+        };
     }
 
     var sizeCell = row.querySelector(".artifact-table-cell-size");
@@ -436,6 +498,7 @@ function uploadCompleteHandler(fileId, event) {
         if ("progress" in artifacts[fileId]) {
             delete artifacts[fileId].upload;
             delete artifacts[fileId].progress;
+            delete artifacts[fileId].action;
         }
 
         console.log("File " + fileId + " upload finished");

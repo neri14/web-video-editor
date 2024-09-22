@@ -4,37 +4,49 @@
         <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     </head>
     <body>
-        <div id="artifact-table">
-            <div id="artifact-table-caption">
-                Files
-            </div>
-            <div id="artifact-table-header">
-                <div class="artifact-header-cell artifact-header-cell-chkbox"></div>
-                <div class="artifact-header-cell artifact-header-cell-filename">file</div>
-                <div class="artifact-header-cell artifact-header-cell-progress"></div>
-                <div class="artifact-header-cell artifact-header-cell-size">size</div>
-                <div class="artifact-header-cell artifact-header-cell-buttons"></div>
-            </div>
-            <div id="artifact-table-body">
-                <!-- file rows generated based on server storage and uploading files -->
-                <div id="artifact-table-extra-row" class="artifact-table-row">
-                    <div class="artifact-table-cell artifact-table-cell-chkbox"></div>
-                    <div class="artifact-table-cell artifact-table-cell-filename"></div>
-                    <div class="artifact-table-cell artifact-table-cell-progress"></div>
-                    <div class="artifact-table-cell artifact-table-cell-size"></div>
-                    <div class="artifact-table-cell artifact-table-cell-buttons">
-                        <form id="artifact-upload-form">
-                            <input type="file" id="artifact-upload-form-files" style="display: none;" multiple onchange="uploadFiles()" />
-                            <input type="button" value="Upload" onclick="document.getElementById('artifact-upload-form-files').click();" />
-                        </form>
+        <div class="content">
+            <div id="artifact-table">
+                <div id="artifact-table-caption">
+                    Files
+                </div>
+                <div id="artifact-table-header">
+                    <div class="artifact-header-cell artifact-header-cell-chkbox"></div>
+                    <div class="artifact-header-cell artifact-header-cell-filename">file</div>
+                    <div class="artifact-header-cell artifact-header-cell-progress"></div>
+                    <div class="artifact-header-cell artifact-header-cell-size">size</div>
+                    <div class="artifact-header-cell artifact-header-cell-buttons"></div>
+                </div>
+                <div id="artifact-table-body">
+                    <!-- file rows generated based on server storage and uploading files -->
+                    <div id="artifact-table-extra-row" class="artifact-table-row">
+                        <div class="artifact-table-cell artifact-table-cell-chkbox"></div>
+                        <div class="artifact-table-cell artifact-table-cell-filename"></div>
+                        <div class="artifact-table-cell artifact-table-cell-progress"></div>
+                        <div class="artifact-table-cell artifact-table-cell-size"></div>
+                        <div class="artifact-table-cell artifact-table-cell-buttons">
+                            <form id="artifact-upload-form">
+                                <input type="file" id="artifact-upload-form-files" style="display: none;" multiple onchange="uploadFiles()" />
+                                <input type="button" class="dark-button" value="Upload" onclick="document.getElementById('artifact-upload-form-files').click();" />
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="buttons">
+                <input id="button-join-videos" class="dark-button" type="button" disabled="true" value="Join Videos" onclick="openJoinVideosMenu(event);" />
+                <input id="button-trim-video" class="dark-button" type="button" disabled="true" value="Trim Video" onclick="openTrimVideoMenu(event);" />
+                <input id="button-align-telemetry" class="dark-button" type="button" disabled="true" value="Align Telemetry" onclick="openAlignTelemetryMenu(event);" />
+                <input id="button-generate-overlay" class="dark-button" type="button" disabled="true" value="Generate Overlay" onclick="openGenerateOverlayMenu(event);" />
+            </div>
         </div>
-        <input id="button-join-videos" type="button" disabled="true" value="Join Videos" onclick="openJoinVideosMenu();" />
-        <input id="button-trim-video" type="button" disabled="true" value="Trim Video" onclick="openTrimVideoMenu();" />
-        <input id="button-align-telemetry" type="button" disabled="true" value="Align Telemetry" onclick="openAlignTelemetryMenu();" />
-        <input id="button-generate-overlay" type="button" disabled="true" value="Generate Overlay" onclick="openGenerateOverlayMenu();" />
+
+
+        <div id="modal-window-bg" class="modal-window-bg">
+            <div class="modal-window">
+              <span id="modal-close" class="modal-close" onclick="hideModalWindow()">&times;</span>
+              <div id="modal-content"></div>
+            </div>
+        </div>
 
         <script src="script.js"></script>
     </body>
